@@ -8,7 +8,7 @@ Kullanim: python3 benchmark_improved.py
 import json
 from openai import OpenAI
 
-API_KEY = "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"  # <-- key'inizi buraya yazin
+API_KEY = "" 
 
 client = OpenAI(api_key=API_KEY, base_url="https://openrouter.ai/api/v1")
 
