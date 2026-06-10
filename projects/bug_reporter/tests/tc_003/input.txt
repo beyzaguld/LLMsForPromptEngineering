@@ -1,0 +1,1 @@
+Export to PDF button does nothing on Firefox when the report contains more than 50 rows. No error message shown. Reproducible every time.

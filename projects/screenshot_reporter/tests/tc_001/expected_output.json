@@ -1,0 +1,7 @@
+{
+  "severity": "high",
+  "affected_component": "checkout/login_button",
+  "affected_platform": "iOS 17.2",
+  "error_type": "crash",
+  "reproducibility": "100%"
+}

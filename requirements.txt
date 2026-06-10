@@ -1,0 +1,7 @@
+# CS460-560 Project #6 — Feedback-Driven LLM Prompt Optimizer
+# Python 3.11+ recommended. Install with:  pip install -r requirements.txt
+
+openai>=1.40,<3            # OpenAI-compatible client (used against the OpenRouter gateway)
+python-dotenv>=1.0,<2      # loads the OPENROUTER_API_KEY from the .env file
+langgraph>=0.2,<2          # state-machine orchestration of the optimizer loop
+pdfplumber>=0.10,<1        # optional: only needed for PDF test-case inputs

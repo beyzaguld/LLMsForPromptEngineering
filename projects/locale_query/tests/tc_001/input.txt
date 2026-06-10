@@ -1,0 +1,9 @@
+Here is a parts table:
+
+| Part   | Weight |
+|--------|--------|
+| Bolt   | 1.500  |
+| Nut    | 2.250  |
+| Washer | 3.100  |
+
+Question: What is the total weight of all parts?

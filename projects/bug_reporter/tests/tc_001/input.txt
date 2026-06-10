@@ -1,0 +1,1 @@
+The login button on the checkout page crashes the app on iOS 17.2 when the user has more than 5 items in their cart. Happens 100% of the time.

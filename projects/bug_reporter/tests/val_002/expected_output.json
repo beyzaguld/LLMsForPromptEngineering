@@ -1,0 +1,7 @@
+{
+  "severity": "high",
+  "affected_component": "search/autocomplete_dropdown",
+  "affected_platform": "mobile viewport < 375px",
+  "condition": "autocomplete visible",
+  "reproducibility": "100%"
+}

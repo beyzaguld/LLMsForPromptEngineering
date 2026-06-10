@@ -1,0 +1,7 @@
+{
+  "severity": "medium",
+  "affected_component": "dashboard/charts",
+  "affected_platform": "Chrome 120+",
+  "condition": "rapid theme switch",
+  "reproducibility": "30%"
+}

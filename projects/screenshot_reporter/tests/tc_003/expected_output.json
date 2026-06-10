@@ -1,0 +1,7 @@
+{
+  "severity": "high",
+  "affected_component": "auth/login_screen",
+  "affected_platform": "Android 13",
+  "error_type": "freeze",
+  "reproducibility": "60%"
+}

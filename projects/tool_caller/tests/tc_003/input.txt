@@ -1,0 +1,6 @@
+User request: "Find me the latest news about large language models"
+
+Available tools:
+- get_weather(city: str) -> Returns current weather for a city
+- search_web(query: str) -> Searches the web and returns results
+- send_email(to: str, subject: str, body: str) -> Sends an email

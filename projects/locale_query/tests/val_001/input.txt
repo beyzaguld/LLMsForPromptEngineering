@@ -1,0 +1,9 @@
+Here is a quantity table:
+
+| Box | Count |
+|-----|-------|
+| X   | 3.200 |
+| Y   | 1.800 |
+| Z   | 2.500 |
+
+Question: What is the total count across all boxes?

@@ -1,0 +1,7 @@
+{
+  "severity": "medium",
+  "affected_component": "profile/picture_upload",
+  "affected_platform": "Safari 16",
+  "error_type": "silent_failure",
+  "reproducibility": "100%"
+}

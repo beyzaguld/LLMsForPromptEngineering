@@ -28,16 +28,14 @@ client = OpenAI(api_key=API_KEY, base_url="https://openrouter.ai/api/v1")
 # YAPILANDIRMA
 # ══════════════════════════════════════════════════════════════════════════════
 
-# Optimize edilecek modeller (target models)
+# Optimize edilecek modeller (target models) — guncel ucretsiz OpenRouter modelleri
 TARGET_MODELS = [
-    "qwen/qwen3-30b-a3b",
-    "qwen/qwen-2.5-7b-instruct",
-    "meta-llama/llama-3.1-8b-instruct",
+    "nvidia/nemotron-3-nano-30b-a3b:free",
+    "openai/gpt-oss-20b:free",
 ]
 
 # Prompt'u optimize eden guclu model (optimizer model)
-# Qwen3 "thinking" modunda calistigi icin optimizer olarak kullanmiyoruz
-OPTIMIZER_MODEL = "meta-llama/llama-3.3-70b-instruct"
+OPTIMIZER_MODEL = "openai/gpt-oss-120b:free"
 
 MAX_ITERATIONS   = 8      # Maksimum deneme sayisi
 PASS_THRESHOLD   = 1.0    # 1.0 = %100 (tum modeller tum test case'leri gecmeli)

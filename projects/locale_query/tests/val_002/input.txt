@@ -1,0 +1,9 @@
+Here is a weight table:
+
+| Crate | Weight |
+|-------|--------|
+| P     | 2.100  |
+| Q     | 1.400  |
+| R     | 1.600  |
+
+Question: Is the total weight greater than 4000?

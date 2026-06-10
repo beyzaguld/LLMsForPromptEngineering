@@ -1,0 +1,7 @@
+{
+  "severity": "high",
+  "affected_component": "report/export_pdf",
+  "affected_platform": "Firefox",
+  "condition": "rows > 50",
+  "reproducibility": "100%"
+}

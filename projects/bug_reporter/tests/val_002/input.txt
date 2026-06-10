@@ -1,0 +1,1 @@
+Search autocomplete dropdown blocks the submit button on mobile viewports below 375px width. Reproducible every time on all browsers.

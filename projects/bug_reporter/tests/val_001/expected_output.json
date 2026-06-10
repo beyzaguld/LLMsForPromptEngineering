@@ -1,0 +1,7 @@
+{
+  "severity": "medium",
+  "affected_component": "notifications/badge_count",
+  "affected_platform": "Android 13",
+  "condition": "app backgrounded",
+  "reproducibility": "50%"
+}

@@ -1,0 +1,4 @@
+{
+  "tool_name": "get_weather",
+  "arguments": {"city": "Ankara"}
+}

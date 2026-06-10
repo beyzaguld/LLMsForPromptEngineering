@@ -1,0 +1,33 @@
+{
+  "project": "screenshot_reporter",
+  "test_case": "tc_001",
+  "expected": {
+    "severity": "high",
+    "affected_component": "checkout/login_button",
+    "affected_platform": "iOS 17.2",
+    "error_type": "crash",
+    "reproducibility": "100%"
+  },
+  "weak_prompt": "You are a mobile and web app bug analyzer.\nGiven a screenshot of an app showing a bug or error, extract information.\nReturn JSON.",
+  "optimized_prompt": "You are an expert mobile‑and‑web app bug analyzer.  \nYou will be given a screenshot (image) that shows an error, crash, freeze, or other bug in a mobile or web application.  \n\n**Task**  \nExtract the required information from the image and output **exactly one JSON object** with the following keys (all must be present, no extra keys, no surrounding text or markdown):\n\n- `severity` – one of `\"critical\"`, `\"high\"`, `\"medium\"`, `\"low\"`  \n- `affected_component` – the UI or code component that shows the problem (e.g., `\"checkout/login_button\"` or `\"dashboard/charts\"`).  \n- `affected_platform` – the operating system, browser, or device version shown in the screenshot (e.g., `\"iOS 17.2\"`, `\"Android 13\"`, `\"Chrome 120\"`).  \n- `error_type` – a concise category such as `\"crash\"`, `\"freeze\"`, `\"data_load_failure\"`, `\"ui_glitch\"`, etc.  \n- `reproducibility` – the percentage of times the bug can be reproduced, expressed **without any surrounding text**, e.g., `\"100%\"`, `\"30%\"`, `\"60%\"`.  \n\n**Output rules**  \n1. Output **only** the JSON object, nothing else.  \n2. Use double quotes for all keys and string values.  \n3. Do **not** include commas as thousands separators or any currency symbols.  \n4. Numbers (if any) must use `.` as the decimal point.  \n5. If a value is not explicitly visible, infer the most likely standard term (e.g., if the screenshot shows a red “Error” banner, use `\"error\"` as `error_type`).  \n\n**Extraction guidance**  \n- Look for visual cues: error messages, stack traces, HTTP status codes, UI element names, device status bars, browser address bars, etc.  \n- Map the visual element that fails to `affected_component`.  \n- Map the OS version, browser version, or device label to `affected_platform`.  \n- Determine `severity` from the seriousness of the message (e.g., crashes → high/critical, UI mis‑alignments → low).  \n- Derive `reproducibility` from any explicit percentage shown or from textual hints (e.g., “always”, “sometimes”, “after 3 toggles”). Express it as a whole‑number percentage string.  \n\n**Example (illustrative only, not a test case)**  \nInput shows a red crash dialog on an iPhone running iOS 16.3 while tapping “Pay”. The dialog says “App crashed”. The component is the “checkout/pay_button”. The bug occurs every time.  \n\nCorrect output:  \n`{\"severity\":\"high\",\"affected_component\":\"checkout/pay_button\",\"affected_platform\":\"iOS 16.3\",\"error_type\":\"crash\",\"reproducibility\":\"100%\"}`  \n\nFollow these rules for every screenshot you process.",
+  "before": {
+    "nvidia/nemotron-nano-12b-v2-vl:free": {
+      "raw": "The image displays a screenshot of a mobile app interface on an iOS 17.2 device, showing an error message during the checkout process. The error message is prominently displayed in a red circle with a white \"X\" symbol, indicating an unexpected termination of the app. The message reads, \"App Terminated Unexpectedly,\" followed by a more detailed explanation, \"Checkout crashed while processing your cart (6 items).\" Below this, there is an error code \"SIGSEGV_CHECKOUT_0x4F\" highlighted in red, which is a technical identifier for the type of error that occurred.\n\nThe user is given two options: \"Report to Developer\" and \"OK.\" The \"Report to Developer\" button is highlighted in red, suggesting that it is the recommended action for the user to take in order to provide feedback to the app developers about the issue. The \"OK\" button is in a standard gray color, indicating it is a secondary option.\n\nAt the bottom of the error message, there is additional information about the device and the app's build, including the platform (iOS 17.2), build number (3.4.1 (211)), and the thread where the error occurred (com.app.checkout). The cart summary shows that there are 6 items totaling $142.50, which was being processed at the time of the crash. The error message is designed to inform the user of the issue and provide a means to report it, while also giving them the option to dismiss the message.",
+      "score": 0.0
+    },
+    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
+      "raw": "{\n  \"error_message\": \"App Terminated Unexpectedly\",\n  \"error_description\": \"Checkout crashed while processing your cart (6 items).\",\n  \"error_code\": \"SIGSEGV_CHECKOUT_0x4F\",\n  \"cart_items\": 6,\n  \"total\": 142.50,\n  \"platform\": \"iOS 17.2\",\n  \"build\": \"3.4.1 (211)\",\n  \"thread\": \"com.app.checkout\",\n  \"reproducibility\": \"100%\"\n}",
+      "score": 0.2
+    }
+  },
+  "after": {
+    "nvidia/nemotron-nano-12b-v2-vl:free": {
+      "raw": "```json\n{\n  \"severity\": \"high\",\n  \"affected_component\": \"checkout\",\n  \"affected_platform\": \"iOS 17.2\",\n  \"error_type\": \"crash\",\n  \"reproducibility\": \"100%\"\n}\n```",
+      "score": 1.0
+    },
+    "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
+      "raw": "{\"severity\":\"high\",\"affected_component\":\"checkout\",\"affected_platform\":\"iOS 17.2\",\"error_type\":\"crash\",\"reproducibility\":\"100%\"}",
+      "score": 1.0
+    }
+  }
+}

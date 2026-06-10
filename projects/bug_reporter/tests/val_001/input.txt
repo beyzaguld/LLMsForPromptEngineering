@@ -1,0 +1,1 @@
+Notification badge count resets to zero when the app is backgrounded on Android 13. Happens about 50% of the time.

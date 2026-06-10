@@ -1,0 +1,8 @@
+Here is a measurement table:
+
+| Item | Length |
+|------|--------|
+| Rod  | 4.750  |
+| Pin  | 1.250  |
+
+Question: What is the difference between the Rod length and the Pin length?

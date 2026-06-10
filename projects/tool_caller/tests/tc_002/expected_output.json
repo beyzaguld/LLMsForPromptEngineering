@@ -1,0 +1,8 @@
+{
+  "tool_name": "send_email",
+  "arguments": {
+    "to": "john@example.com",
+    "subject": "Team Sync",
+    "body": "Meeting at 3pm today"
+  }
+}

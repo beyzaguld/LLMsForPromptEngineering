@@ -1,0 +1,9 @@
+Here is a distance table:
+
+| Segment | Distance |
+|---------|----------|
+| S1      | 2.100    |
+| S2      | 3.400    |
+| S3      | 1.500    |
+
+Question: What is the total distance across all segments?

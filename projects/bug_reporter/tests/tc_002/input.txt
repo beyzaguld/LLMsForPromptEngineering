@@ -1,0 +1,1 @@
+Sometimes the dashboard fails to load charts when the user switches between dark and light mode rapidly. Only seen on Chrome 120+. Occurs roughly 30% of the time.

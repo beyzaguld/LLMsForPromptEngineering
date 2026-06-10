@@ -1,0 +1,33 @@
+{
+  "project": "bug_reporter",
+  "test_case": "tc_001",
+  "expected": {
+    "severity": "high",
+    "affected_component": "checkout/login_button",
+    "affected_platform": "iOS 17.2",
+    "condition": "cart_items > 5",
+    "reproducibility": "100%"
+  },
+  "weak_prompt": "You are a software bug analyzer.\nGiven a bug report, extract the key information.\nReturn the result as JSON.",
+  "optimized_prompt": "You are a software bug analyzer.  \nYour task is to read a bug report (free‑form text) and output **exactly** the following JSON object, with **no extra fields, no surrounding text, and no markdown**:\n\n```json\n{\n  \"severity\": \"<low|medium|high|critical>\",\n  \"affected_component\": \"<component_path>\",\n  \"affected_platform\": \"<platform_name> <platform_version>\",\n  \"condition\": \"<short_condition>\",\n  \"reproducibility\": \"<percentage>\"\n}\n```\n\n**Field definitions**\n\n* **severity** – the overall impact level. Map the report’s wording to one of the four canonical values:  \n  * “critical”, “high”, “severe”, “blocking” → **high** (or **critical** if the report explicitly uses the word “critical”)  \n  * “medium”, “moderate”, “average” → **medium**  \n  * “low”, “minor”, “trivial” → **low**  \n  * If the report uses “critical” keep the value **critical**; otherwise never output “critical” unless it appears verbatim.\n\n* **affected_component** – a concise path that identifies the part of the product.  \n  Combine the high‑level area and the specific element, separated by a forward slash, using only lowercase letters, numbers and underscores.  \n  *Examples*: “checkout/login_button”, “dashboard/charts”, “report/export_pdf”, “profile/picture_upload”.\n\n* **affected_platform** – the operating system, browser, or device together with its version, exactly as written in the report, with a single space between name and version.  \n  Use the same capitalization for the name as in the report, keep the version string unchanged, and do **not** add “OS”, “v.” or other prefixes.  \n  *Examples*: “iOS 17.2”, “Chrome 120+”, “Firefox”, “Safari 16”.\n\n* **condition** – the minimal condition that triggers the bug, expressed in a short, normalized form.  \n  Use simple expressions when numbers are mentioned:  \n  * “cart_items > 5” for “more than 5 items in cart”  \n  * “rows > 50” for “report contains more than 50 rows”  \n  * “file_size > 5MB” for “image file larger than 5 MB”  \n  If no numeric threshold is given, use a few words that capture the trigger, all lower‑case, e.g., “rapid theme switch”, “login attempt”, “upload attempt”.\n\n* **reproducibility** – the percentage of times the bug occurs.  \n  Extract the exact figure from the report (e.g., “100%”, “30%”, “always”, “intermittent”).  \n  * If the report says “always”, “100%”, “every time”, or similar, output **\"100%\"**.  \n  * If it says “intermittent”, “≈30%”, “about 30%”, output the numeric part followed by “%” (e.g., “30%”).  \n  * If only a qualitative term is given (e.g., “rarely”), approximate to “0%”.  \n\n**General instructions**\n\n1. Read the entire bug report and locate the information needed for each of the five fields.  \n2. If a required piece of information is missing, **do not guess**; instead, output the literal string `\"unknown\"` for that field.  \n3. All string values must be plain text, using **\".\"** as the decimal point if needed, **no thousands separators**, and **no extra whitespace**.  \n4. The JSON must be syntactically valid, with double quotes around keys and string values, and commas separating the fields in the order shown above.  \n5. Do not include any other keys, comments, or explanatory text.  \n\n**Example output format**\n\n```json\n{\n  \"severity\": \"high\",\n  \"affected_component\": \"checkout/login_button\",\n  \"affected_platform\": \"iOS 17.2\",\n  \"condition\": \"cart_items > 5\",\n  \"reproducibility\": \"100%\"\n}\n```",
+  "before": {
+    "nvidia/nemotron-3-nano-30b-a3b:free": {
+      "raw": "{\n  \"component\": \"Login buttonon checkout page\",\n  \"platform\": \"iOS\",\n  \"os_version\": \"17.2\",\n  \"trigger_condition\": \"User has more than 5 items in their cart\",\n  \"behavior\": \"App crashes\",\n  \"reproducibility\": \"100% reproducible\",\n  \"severity\": \"Critical\",\n  \"impact\": \"Prevents checkout completion for affected users\",\n  \"environment\": \"iOS 17.2 on iPhone devices\",\n  \"additional_notes\": \"The crash occurs specifically when the login button is tapped under the described cart condition.\"\n}",
+      "score": 0.4
+    },
+    "openai/gpt-oss-20b:free": {
+      "raw": "```json\n{\n  \"bug_id\": null,\n  \"title\": \"Login button crash on checkout page (iOS 17.2, cart > 5 items)\",\n  \"component\": \"Checkout UI\",\n  \"module\": \"LoginButtonHandler\",\n  \"platform\": \"iOS\",\n  \"os_version\": \"17.2\",\n  \"affected_versions\": null,\n  \"severity\": \"High\",\n  \"reproducibility\": \"100%\",\n  \"frequency\": \"Always\",\n  \"steps_to_reproduce\": [\n    \"Open the app on an iOS 17.2 device.\",\n    \"Add more than 5 items to the cart.\",\n    \"Navigate to the checkout page.\",\n    \"Tap the 'Login' button.\"\n  ],\n  \"expected_behavior\": \"User is taken to the login screen without crashing.\",\n  \"actual_behavior\": \"The app crashes immediately after tapping the login button.\",\n  \"error_message\": null,\n  \"crash_log\": null,\n  \"possible_cause\": \"Potential out‑of‑bounds array access or memory overrun when handling cart items > 5 during login flow.\",\n  \"workaround\": \"Limit cart to 5 items or disable login button until cart size is validated.\",\n  \"status\": \"Open\",\n  \"reported_by\": null,\n  \"reported_date\": null,\n  \"assigned_to\": null,\n  \"tags\": [\"iOS\", \"17.2\", \"checkout\", \"login\", \"crash\"]\n}\n```",
+      "score": 0.4
+    }
+  },
+  "after": {
+    "nvidia/nemotron-3-nano-30b-a3b:free": {
+      "raw": "{\n  \"severity\": \"high\",\n  \"affected_component\": \"checkout/login_button\",\n  \"affected_platform\": \"iOS 17.2\",\n  \"condition\": \"cart_items > 5\",\n  \"reproducibility\": \"100%\"\n}",
+      "score": 1.0
+    },
+    "openai/gpt-oss-20b:free": {
+      "raw": "{\"severity\":\"high\",\"affected_component\":\"checkout/login_button\",\"affected_platform\":\"iOS 17.2\",\"condition\":\"cart_items > 5\",\"reproducibility\":\"100%\"}",
+      "score": 1.0
+    }
+  }
+}

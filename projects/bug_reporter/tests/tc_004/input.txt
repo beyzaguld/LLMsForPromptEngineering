@@ -1,0 +1,1 @@
+Profile picture upload silently fails on Safari 16 when the image file is larger than 5MB. No error shown to the user. Always reproducible.

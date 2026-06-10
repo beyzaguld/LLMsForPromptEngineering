@@ -6,9 +6,14 @@ Kullanim: python3 benchmark_improved.py
 """
 
 import json
+import os
 from openai import OpenAI
+from dotenv import load_dotenv
 
-API_KEY = "" 
+load_dotenv()
+API_KEY = os.getenv("OPENROUTER_API_KEY")
+if not API_KEY:
+    raise SystemExit("HATA: OPENROUTER_API_KEY bulunamadı. .env dosyasını oluşturun (bkz. README.txt).")
 
 client = OpenAI(api_key=API_KEY, base_url="https://openrouter.ai/api/v1")
 
@@ -87,9 +92,9 @@ TEST_CASES = [
 ]
 
 MODELS = [
-    "qwen/qwen3-30b-a3b",
-    "qwen/qwen-2.5-7b-instruct",
-    "meta-llama/llama-3.1-8b-instruct",
+    "nvidia/nemotron-3-nano-30b-a3b:free",
+    "openai/gpt-oss-20b:free",
+    "openai/gpt-oss-120b:free",
 ]
 
 REQUIRED_KEYS = {"severity", "affected_component", "affected_platform", "condition", "reproducibility"}

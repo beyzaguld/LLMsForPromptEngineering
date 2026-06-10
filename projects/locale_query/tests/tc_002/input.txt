@@ -1,0 +1,9 @@
+Here is a sensor reading table:
+
+| Sensor | Reading |
+|--------|---------|
+| A      | 1.200   |
+| B      | 2.500   |
+| C      | 1.800   |
+
+Question: Is the sum of all readings greater than 5000?

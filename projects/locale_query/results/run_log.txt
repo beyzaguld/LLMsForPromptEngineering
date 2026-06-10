@@ -1,0 +1,101 @@
+
+=================================================================
+  OPTIMIZE (LangGraph): projects/locale_query
+=================================================================
+
+  Proje dizini : /Users/beyzaguldemir/Documents/Master/CS 560/projects/locale_query
+  Baslangic prompt (187 karakter):
+    You are a data analyst. You will receive a table and a question about it. Read the numbers in the ta...
+  Target modeller: ['nvidia/nemotron-3-nano-30b-a3b:free', 'openai/gpt-oss-20b:free']
+  Optimizer model: openai/gpt-oss-120b:free
+  Egitim seti    : 4 case
+  Validation     : 2 case
+  Max iterasyon  : 30
+  Pass threshold : 100%
+
+─────────────────────────────────────────────────────────────────
+  ITERASYON 1/30
+─────────────────────────────────────────────────────────────────
+
+  Prompt: You are a data analyst. You will receive a table and a question about it. Read the numbers in the table and answer the q...
+
+  [1/4] Modeller calistiriliyor (4 egitim case)...
+
+  Egitim sonuclari (overall: 0%):
+    ░░░░░░░░░░░░░░░░░░░░     0%  nemotron-3-nano-30b-a3b:free
+    ░░░░░░░░░░░░░░░░░░░░     0%  gpt-oss-20b:free
+
+  [2/4] Validation seti (2 case)...
+
+  Validation sonuclari (overall: 0%):
+    ░░░░░░░░░░░░░░░░░░░░     0%  nemotron-3-nano-30b-a3b:free
+    ░░░░░░░░░░░░░░░░░░░░     0%  gpt-oss-20b:free
+
+  Generalisation gap: 0pp (OK)
+
+  ★ Yeni EN IYI prompt (combined 0% — iter 1)
+
+  [3/4] Basarisizlik raporu olusturuluyor...
+  [4/4] Optimizer calistiriliyor (openai/gpt-oss-120b:free)...
+  Yeni prompt: You are a data analyst. You will receive a table and a question about it.    **Number interpretation...
+
+─────────────────────────────────────────────────────────────────
+  ITERASYON 2/30
+─────────────────────────────────────────────────────────────────
+
+  Prompt: You are a data analyst. You will receive a table and a question about it.    **Number interpretation**   - All numeric v...
+
+  [1/4] Modeller calistiriliyor (4 egitim case)...
+
+  Egitim sonuclari (overall: 100%):
+    ████████████████████   100%  nemotron-3-nano-30b-a3b:free
+    ████████████████████   100%  gpt-oss-20b:free
+
+  [2/4] Validation seti (2 case)...
+
+  Validation sonuclari (overall: 100%):
+    ████████████████████   100%  nemotron-3-nano-30b-a3b:free
+    ████████████████████   100%  gpt-oss-20b:free
+
+  Generalisation gap: 0pp (OK)
+
+  ★ Yeni EN IYI prompt (combined 100% — iter 2)
+
+  ✓ HEDEF ULASILDI! Pass rate >= 100%
+
+=================================================================
+  OPTIMIZASYON OZETI
+=================================================================
+
+  Iterasyon basina pass rate (train | val | combined):
+    Iter 1: ░░░░░░░░░░░░░░░░░░░░ train   0% | val   0% | combined   0%
+    Iter 2: ████████████████████ train 100% | val 100% | combined 100%  ★ EN IYI
+
+  EN IYI prompt: iter 2  (train 100% | val 100% | combined 100%)
+
+  FINAL (EN IYI) PROMPT:
+  ───────────────────────────────────────────────────────
+  You are a data analyst. You will receive a table and a question about it.  
+  
+  **Number interpretation**  
+  - All numeric values in the table use a period “.” as the decimal separator and represent thousands.  
+  - Convert each number to its full integer value by multiplying by 1,000.  
+  - Output the result as a plain string containing only digits (no commas, spaces, or other symbols).  
+  
+  **Boolean answers**  
+  - If the answer is a logical true/false, output the lowercase string `"true"` or `"false"`.
+  
+  **Output format**  
+  - Respond with exactly one JSON object.  
+  - The object must contain a single key named `"answer"`.  
+  - The value must be a string as described above.  
+  - Do not include any additional text, explanations, or markdown.  
+  
+  **Example**  
+  If the correct answer after conversion is 6.85 → 6850, output: `{"answer":"6850"}`.  
+  If the answer is true, output: `{"answer":"true"}`.
+  ───────────────────────────────────────────────────────
+
+  Optimize edilmis prompt kaydedildi: /Users/beyzaguldemir/Documents/Master/CS 560/projects/locale_query/results/optimized_prompt.md
+  Log kaydedildi: projects/locale_query/results/optimization_log.json
+

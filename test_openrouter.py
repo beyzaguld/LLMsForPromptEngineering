@@ -1,7 +1,10 @@
 """
 OpenRouter bağlantı testi
 Kullanım: python test_openrouter.py
+
+API anahtarı .env dosyasındaki OPENROUTER_API_KEY değişkeninden okunur.
 """
+import os
 import sys
 
 try:
@@ -12,9 +15,12 @@ except ImportError:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "openai"])
     from openai import OpenAI
 
-# ── Buraya yeni API key'inizi girin ───────────────────────────────────────────
-API_KEY = "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"  # <-- buraya OpenRouter key'inizi yazin
-# ─────────────────────────────────────────────────────────────────────────────
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.getenv("OPENROUTER_API_KEY")
+if not API_KEY:
+    sys.exit("HATA: OPENROUTER_API_KEY bulunamadı. .env dosyasını oluşturun (bkz. README.txt).")
 
 client = OpenAI(
     api_key=API_KEY,
@@ -22,9 +28,9 @@ client = OpenAI(
 )
 
 models = [
-    "qwen/qwen3-30b-a3b",
-    "qwen/qwen-2.5-7b-instruct",
-    "meta-llama/llama-3.1-8b-instruct",
+    "nvidia/nemotron-3-nano-30b-a3b:free",
+    "openai/gpt-oss-20b:free",
+    "openai/gpt-oss-120b:free",
 ]
 
 prompt = "What is 2+2? Reply with just the number."
@@ -36,10 +42,10 @@ for model in models:
         resp = client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=20,
+            max_tokens=200,
             temperature=0
         )
-        answer = resp.choices[0].message.content.strip()
+        answer = (resp.choices[0].message.content or "").strip()
         status = "✓" if "4" in answer else "?"
         print(f"  {status}  {model}\n     Cevap: {answer}\n")
     except Exception as e:
