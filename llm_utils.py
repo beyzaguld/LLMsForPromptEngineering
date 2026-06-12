@@ -32,13 +32,13 @@ def strip_thinking(text: str) -> str:
 
 
 def call_llm(client: OpenAI, model: str, system: str, user_content, max_tokens=2000,
-             retries: int = 3) -> str | None:
+             retries: int = 3, temperature: float = 0) -> str | None:
     for attempt in range(retries + 1):
         try:
             messages = [{"role": "system", "content": system}]
             messages.append({"role": "user", "content": user_content})
             resp = client.chat.completions.create(
-                model=model, messages=messages, max_tokens=max_tokens, temperature=0
+                model=model, messages=messages, max_tokens=max_tokens, temperature=temperature
             )
             content = resp.choices[0].message.content
             result = strip_thinking(content) if content else None
@@ -259,8 +259,8 @@ Your job: Rewrite the system prompt so that ALL models produce the correct answe
 
 HOW TO DIAGNOSE FAILURES (reason step by step before rewriting):
 - Compare each model output to the expected output and look for SYSTEMATIC patterns, not one-off mistakes.
-- If a numeric answer is wrong by a consistent factor (for example roughly 1000x too small or too large), the model is almost certainly MISREADING THE NUMBER FORMAT. Tables can use different locale conventions: in some locales '.' is the thousands separator and ',' is the decimal separator, while in others it is the reverse. Decide which convention makes the expected answers correct, then add an explicit, unambiguous rule telling the model exactly how to interpret '.' and ',' in the input numbers, with a short illustrative example using MADE-UP numbers (never the test values).
-- If the answer value is correct but formatted differently (extra thousands separators, currency symbols, trailing text), add an explicit output-format rule: output a plain number using '.' as the decimal point and NO thousands separators.
+- Form a hypothesis about WHY the model produced the wrong value, and add a clear, explicit instruction that would prevent that mistake.
+- If a model's output is correct in meaning but formatted differently, add an explicit output-format rule.
 - If models return wrong/extra keys or wrap output in prose or markdown, state the exact required keys and forbid any text outside the JSON object.
 
 STRICT RULES:
@@ -271,13 +271,15 @@ STRICT RULES:
 
 
 def optimize_prompt(client: OpenAI, optimizer_model: str,
-                    current_prompt: str, failure_report: str) -> str:
+                    current_prompt: str, failure_report: str,
+                    temperature: float = 0) -> str:
     user_msg = (
         f"CURRENT SYSTEM PROMPT:\n---\n{current_prompt}\n---\n\n"
         f"{failure_report}\n\n"
         "Please provide an improved system prompt that fixes these failures on all models."
     )
-    result = call_llm(client, optimizer_model, META_PROMPT, user_msg, max_tokens=2000)
+    result = call_llm(client, optimizer_model, META_PROMPT, user_msg,
+                      max_tokens=2000, temperature=temperature)
     return result.strip() if result else current_prompt
 
 

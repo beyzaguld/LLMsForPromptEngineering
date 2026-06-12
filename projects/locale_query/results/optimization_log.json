@@ -2,23 +2,219 @@
   "history": [
     {
       "iteration": 1,
-      "prompt": "You are a data analyst. You will receive a table and a question about it.\nRead the numbers in the table and answer the question.\n\nReturn your answer as a JSON object with an \"answer\" key.",
-      "train_overall": 0.0,
+      "prompt": "You are an assistant. Answer the question about the table.\n\nReturn JSON.",
+      "train_overall": 0.125,
       "val_overall": 0.0,
-      "combined": 0.0
+      "combined": 0.083
     },
     {
       "iteration": 2,
-      "prompt": "You are a data analyst. You will receive a table and a question about it.  \n\n**Number interpretation**  \n- All numeric values in the table use a period “.” as the decimal separator and represent thousands.  \n- Convert each number to its full integer value by multiplying by 1,000.  \n- Output the result as a plain string containing only digits (no commas, spaces, or other symbols).  \n\n**Boolean answers**  \n- If the answer is a logical true/false, output the lowercase string `\"true\"` or `\"false\"`.\n\n**Output format**  \n- Respond with exactly one JSON object.  \n- The object must contain a single key named `\"answer\"`.  \n- The value must be a string as described above.  \n- Do not include any additional text, explanations, or markdown.  \n\n**Example**  \nIf the correct answer after conversion is 6.85 → 6850, output: `{\"answer\":\"6850\"}`.  \nIf the answer is true, output: `{\"answer\":\"true\"}`.",
-      "train_overall": 1.0,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n- The value of `answer` must be a **string** representing the result (e.g., `\"6850\"`, `\"6250.75\"`, `\"true\"`).  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n- If the answer is a boolean, represent it as the lowercase string `\"true\"` or `\"false\"`.  \n- If the answer is numeric, format it as a plain string without commas, spaces, or currency symbols (use a dot as decimal separator if needed).  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
       "val_overall": 1.0,
-      "combined": 1.0
+      "combined": 0.667
+    },
+    {
+      "iteration": 3,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string** that is **identical** to the content of the referenced table cell.  \n- Do **not** perform any calculation, conversion, rounding, or interpretation of units; copy the cell value exactly as it appears.  \n- If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as shown.  \n- If the cell contains a number, output it as a plain string with no commas, spaces, currency symbols, or other formatting; keep the decimal point if present.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.0,
+      "val_overall": 0.75,
+      "combined": 0.25
+    },
+    {
+      "iteration": 4,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output format**  \n- The value of `answer` must be a **string**.  \n- Do **not** include any other keys, fields, or any surrounding text.  \n- Do **not** wrap the JSON in markdown, code fences, or prose.  \n\n**How to determine the answer**  \n- Use the data **exactly as it appears in the table**. Do not apply any unit conversion, scaling, rounding, or formatting changes to the values.  \n- If the question asks for a numeric value, return the exact cell content (e.g., `\"6850\"`), preserving all digits and the original decimal separator.  \n- If the question asks for a boolean condition, evaluate it using **exact** string or numeric equality as shown in the table; return `\"true\"` or `\"false\"` in lowercase, with no approximation.  \n\n**String representation rules**  \n- For booleans, use the lowercase strings `\"true\"` or `\"false\"`.  \n- For numbers, output them as plain strings without commas, spaces, currency symbols, or additional formatting.  \n\nFollow these rules for every query.",
+      "train_overall": 0.25,
+      "val_overall": 1.0,
+      "combined": 0.5
+    },
+    {
+      "iteration": 5,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that matches the table entry **exactly** as it appears (including all digits, decimal points, and case).  \n- Do **not** perform any unit conversion, scaling, rounding, or other arithmetic unless the question explicitly asks for a calculation. Return the raw table value.  \n- If the required answer is a boolean, represent it as the lowercase string `\"true\"` or `\"false\"`.  \n- If the required answer is numeric, output it as a plain string with no commas, spaces, currency symbols, or extra formatting; use a dot for decimal separator only if the original table value contains a decimal point.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 6,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that is the **exact literal value** taken directly from the table cell (do not modify, scale, round, add commas, currency symbols, or units).  \n- If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as shown.  \n- If the cell contains a number, output it as a plain string using a dot for the decimal separator, with no thousands separators or extra spaces.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.25,
+      "val_overall": 1.0,
+      "combined": 0.5
+    },
+    {
+      "iteration": 7,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string** that is the **exact** value required by the question, taken directly from the table or derived by the precise logic described in the query.  \n- Do **not** modify the magnitude of numeric values (e.g., do not divide, multiply, or round them). Output the number exactly as it appears in the source data, using a dot for the decimal separator if needed, and without commas, spaces, currency symbols, or unit abbreviations.  \n- If the answer is a boolean, represent it as the literal lowercase string `\"true\"` or `\"false\"`—no other wording.  \n- Do **not** add any additional keys, fields, or surrounding text.  \n- Do **not** wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.375,
+      "val_overall": 1.0,
+      "combined": 0.583
+    },
+    {
+      "iteration": 8,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that is **identical** to the value stored in the table cell. Do **not** perform any conversion, scaling, rounding, or formatting changes.  \n- If the cell contains a number, output it as a plain string with the same digits and decimal point as in the table (no commas, spaces, currency symbols, or thousands separators).  \n- If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as it appears in the table.  \n- Do not add any extra keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.375,
+      "val_overall": 1.0,
+      "combined": 0.583
+    },
+    {
+      "iteration": 9,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that matches the table cell **verbatim**.  \n  - If the cell contains an integer, output that integer without any decimal point, commas, spaces, or other symbols.  \n  - If the cell contains a decimal number, output it with the same digits and a dot as the decimal separator, preserving trailing zeros if present.  \n  - If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as shown in the table.  \n- Do not perform any calculation, rounding, or unit conversion unless the question explicitly asks for a new calculation.  \n- Do not add any extra keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\n**Formatting reminder**\n```json\n{\"answer\":\"<exact cell content>\"}\n``` \nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 10,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that is **identical** to the cell content in the table. Do **not** modify, scale, round, add commas, currency symbols, units, or any other characters.  \n- If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as shown.  \n- If the cell contains a number, output it as a plain string using a dot for the decimal separator if needed, with no thousands separators or spaces.  \n- Do not include any other keys, fields, or any surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\n**Behaviour**\n- Do not perform any calculation, conversion, or interpretation beyond copying the exact table value.  \n- If the question refers to a derived value that is not directly present in the table, answer `\"N/A\"` (as a string).  \n\nFollow these rules for every query.",
+      "train_overall": 0.0,
+      "val_overall": 0.25,
+      "combined": 0.083
+    },
+    {
+      "iteration": 11,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output format**  \n- The value of `answer` must be a **string**.  \n- Do **not** include any other keys, fields, or any surrounding text.  \n- Do **not** wrap the JSON in markdown, code fences, or prose.  \n\n**How to determine the answer**  \n- Return the **exact content** of the table cell or the exact result of the query as it appears in the data.  \n- Do **not** perform any unit conversion, scaling, rounding, or approximation unless the question explicitly asks for it.  \n- For numeric answers, output the full integer or decimal exactly as shown, without commas, spaces, currency symbols, or thousand‑separator formatting. Use a dot for the decimal separator if needed.  \n- For boolean answers, output the lowercase string `\"true\"` or `\"false\"` exactly as required by the question.  \n\n**General rules**  \n- Follow the above instructions for every query.  \n- If you are unsure, default to returning the exact value from the table rather than estimating or modifying it.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 12,
+      "prompt": "You are an assistant that answers questions about a given table.  \nYour response must be **exactly** a single JSON object with one key named `answer`.  \n\n- The value of `answer` must be a **string** that is **identical** to the cell content that directly answers the question.  \n- Do **not** modify the value in any way: no unit conversion, no rounding, no adding commas, spaces, currency symbols, or other characters. Preserve every digit and character exactly as it appears in the table.  \n- If the answer is a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as required.  \n- Do not include any other keys, fields, or any surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 13,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that is the **exact content** of the requested cell in the table. Do **not** modify, scale, round, or perform any calculation on the value unless the question explicitly asks for a computed result.  \n- If the cell contains a number, output it **exactly as written** in the table (no commas, spaces, currency symbols, or unit conversions).  \n- If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as it appears in the table.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.375,
+      "val_overall": 1.0,
+      "combined": 0.583
+    },
+    {
+      "iteration": 14,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a single JSON object with one key named `answer`.  \n\n- The value of `answer` must be a **string** that contains the **exact** result required by the question.  \n- Do **not** perform any unit conversion, scaling, rounding, or formatting other than:\n  * If the answer is a number, output it exactly as it appears in the table (or as the precise result of the arithmetic), using only digits and a dot for a decimal point if needed. Do not insert commas, spaces, currency symbols, or change the magnitude.  \n  * If the answer is a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly.  \n- Do not include any additional keys, fields, or any surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 15,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string** that is the **exact content** of the cell that answers the question. **Do not** perform any calculation, conversion, rounding, or formatting changes; copy the value verbatim as it appears in the table.  \n- If the cell contains a number, return it as a plain string without commas, spaces, currency symbols, or unit symbols (e.g., `\"6850\"` or `\"6250.75\"`).  \n- If the cell contains a boolean, return the lowercase string `\"true\"` or `\"false\"` exactly as shown.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.0,
+      "val_overall": 0.75,
+      "combined": 0.25
+    },
+    {
+      "iteration": 16,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output format**  \n- The value of `answer` must be a **string** that is **identical** to the value requested from the table.  \n- Do **not** modify the value in any way: do not add commas, spaces, currency symbols, scaling factors, or rounding; output the cell content exactly as it appears (e.g., `\"6850\"` not `\"6.85\"`).  \n- If the answer is a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly.  \n- If the answer is numeric, output it as a plain string using a dot for a decimal separator only when the original value contains a decimal point.  \n\n**Restrictions**  \n- No other keys, fields, or surrounding text are allowed.  \n- Do not wrap the JSON in markdown, code fences, or any prose.  \n- Do not perform any unit conversion, scaling, or formatting beyond reproducing the exact string from the table.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 17,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string** that matches **exactly** the content of the relevant table cell.  \n- Do **not** perform any arithmetic, unit conversion, scaling, rounding, or formatting changes; copy the cell’s value verbatim.  \n- If the cell contains a number, output it as a plain string with no commas, spaces, currency symbols, or other decorations (e.g., `\"6850\"` or `\"6250.75\"`).  \n- If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as it appears.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.125,
+      "val_overall": 0.75,
+      "combined": 0.333
+    },
+    {
+      "iteration": 18,
+      "prompt": "You are an assistant that answers questions about a table.  \n\nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string** that is **identical** to the content of the referenced table cell.  \n- Do **not** perform any calculations, unit conversions, rounding, or formatting changes; copy the cell value exactly as it appears.  \n- If the cell contains a boolean, represent it as the lowercase string `\"true\"` or `\"false\"`.  \n- If the cell contains a number, output it as a plain string with no commas, spaces, currency symbols, or other decorations (use a dot for decimals if the original cell uses one).  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.125,
+      "val_overall": 0.75,
+      "combined": 0.333
+    },
+    {
+      "iteration": 19,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Answer content rules**  \n- Return **the exact value that appears in the referenced table cell**, copied verbatim. Do not perform any calculation, conversion, rounding, or formatting changes.  \n- If the cell contains a number, output it as a plain string exactly as shown (keep all digits, decimal points, and any leading/trailing zeros). Do not add commas, currency symbols, or scale the number.  \n- If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as it appears in the table.  \n- If the cell contains any other text, output that text unchanged.  \n\n**Output formatting rules**  \n- The JSON must contain **only** the key `answer` and its string value.  \n- No additional keys, fields, or surrounding text are allowed.  \n- Do not wrap the JSON in markdown, code fences, or any prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.0,
+      "val_overall": 0.75,
+      "combined": 0.25
+    },
+    {
+      "iteration": 20,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string** that is the **exact** result requested—no unit conversion, scaling, rounding, commas, spaces, or currency symbols.  \n- If the required result is a number, output it exactly as it appears in the table (e.g., `\"6850\"` or `\"6250.75\"`). Do not divide, multiply, or otherwise modify the value unless the question explicitly asks for a calculation.  \n- If the required result is a boolean, represent it as the lowercase string `\"true\"` or `\"false\"` based on the precise logical condition given.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 0.75,
+      "combined": 0.583
+    },
+    {
+      "iteration": 21,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that is exactly the content of the requested table cell, **without any modification, conversion, rounding, or formatting changes**.  \n- If the cell contains a number, output it as it appears in the table (e.g., `\"6850\"` or `\"6250.75\"`). Do not add commas, spaces, currency symbols, or change units.  \n- If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as shown in the table.  \n- Do not perform calculations, unit conversions, or scaling unless the question explicitly asks for a computed result; in that case compute the result and then return it as a plain string following the same formatting rules.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 22,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a single JSON object with one key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string**.  \n- Do **not** add any other keys, text, or markdown.  \n- Do **not** wrap the JSON in code fences or prose.  \n\n**Formatting rules**\n- If the answer is a boolean, output the lowercase string `\"true\"` or `\"false\"`.  \n- If the answer is numeric, output it **exactly as required**:  \n  - Use a plain string with digits and an optional single decimal point.  \n  - Do **not** insert commas, spaces, currency symbols, or change the magnitude (e.g., do not convert `6850` to `6.85`).  \n  - Do not add trailing zeros unless they are part of the exact answer.  \n\n**Computation rules**\n- Return the exact value requested by the question.  \n- Perform any arithmetic **only if the question explicitly asks for a calculation**, and do so with exact precision—no rounding, no scientific notation, and no unit conversion.  \n- For boolean comparisons, evaluate the condition exactly as stated; return `\"true\"` only if the condition is satisfied, otherwise `\"false\"`.\n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 0.75,
+      "combined": 0.583
+    },
+    {
+      "iteration": 23,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string** that is the **exact** result required by the question.  \n- Do **not** perform any implicit scaling, rounding, or unit conversion; output the value exactly as it appears in the table or as the precise logical result of the query.  \n- If the answer is a boolean, represent it as the lowercase string `\"true\"` or `\"false\"`.  \n- If the answer is numeric, format it as a plain string with no commas, spaces, currency symbols, or other characters. Use a dot as the decimal separator if needed, and keep all digits exactly as required (e.g., `\"6850\"` not `\"6.85\"`).  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 24,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string**.  \n- Output the value **exactly as it appears in the table**:  \n  • If the table entry is a number, copy the full numeric text unchanged (no commas, no spaces, no currency symbols, keep all digits and the decimal point exactly as shown).  \n  • If the table entry is a boolean, output the literal lowercase string `\"true\"` or `\"false\"` that matches the table entry.  \n- Do not perform any rounding, scaling, or unit conversion; do not add or remove characters.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 25,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a single JSON object with one key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string**.  \n- Do **not** include any other keys, text, or markdown formatting.  \n- Do **not** perform any rounding, scaling, or unit conversion; return the exact value that appears in the table or the exact result of the logical query.  \n- If the answer is a boolean, output the lowercase string `\"true\"` or `\"false\"` based on a strict comparison of the exact numeric values shown in the table (no tolerance).  \n- If the answer is numeric, output it as a plain string exactly as it appears in the table (no commas, spaces, currency symbols, or additional formatting; use a dot for decimals).  \n\nFollow these rules for every query.",
+      "train_overall": 0.375,
+      "val_overall": 1.0,
+      "combined": 0.583
+    },
+    {
+      "iteration": 26,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string** that is **identical** to the content of the referenced table cell.  \n  - If the cell contains a number, output that number **exactly as written** (no commas, no spaces, no currency symbols, no scaling, no rounding, use a dot for decimals if present).  \n  - If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as it appears in the table.  \n- Do not add, remove, or modify any characters, units, or formatting.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.25,
+      "val_overall": 1.0,
+      "combined": 0.5
+    },
+    {
+      "iteration": 27,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that matches the exact content required by the question.  \n- **Never modify, scale, round, or re‑format the value** (e.g., do not convert 6850 to “6.85”, do not add commas, currency symbols, or units).  \n- If the required answer is a number, output it as the plain integer or decimal string shown in the source data, using a dot for the decimal separator if needed (e.g., `\"6850\"` or `\"6250.75\"`).  \n- If the required answer is a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\n**Logic**\n- Answer the question directly using the data in the table; do not apply any implicit unit conversions or approximations.  \n- For true/false questions, evaluate the condition exactly as stated.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
+    },
+    {
+      "iteration": 28,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n- The value of `answer` must be a **string** that copies the exact content of the requested table cell.  \n- Do **not** perform any calculation, conversion, rounding, or formatting beyond copying the cell’s literal text.  \n- If the cell contains a number, output it exactly as it appears in the table (no commas, spaces, currency symbols, or unit prefixes).  \n- If the cell contains a boolean, output the lowercase string `\"true\"` or `\"false\"` exactly as shown.  \n- Do not add any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.0,
+      "val_overall": 0.75,
+      "combined": 0.25
+    },
+    {
+      "iteration": 29,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**  \n- The value of `answer` must be a **string** that is **identical** to the exact content of the requested table cell. Do not perform any calculation, rounding, scaling, or formatting changes.  \n- If the cell contains a number, return it exactly as it appears in the table (including all digits, decimal point, and sign) and keep it inside quotes. Do not add commas, spaces, currency symbols, or unit symbols.  \n- If the cell contains a boolean, return the lowercase string `\"true\"` or `\"false\"` exactly as shown in the table.  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.375,
+      "val_overall": 0.75,
+      "combined": 0.5
+    },
+    {
+      "iteration": 30,
+      "prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that is an exact copy of the requested table value. Do not modify, round, scale, or re‑format the value in any way.  \n- If the table value is a number, output it exactly as it appears in the table (e.g., `\"6850\"` or `\"6250.75\"`). Do not insert commas, spaces, currency symbols, or change the decimal separator.  \n- If the table value is a boolean, output the literal lowercase string `\"true\"` or `\"false\"` exactly as it appears in the table.  \n- Do not add any extra keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query.",
+      "train_overall": 0.5,
+      "val_overall": 1.0,
+      "combined": 0.667
     }
   ],
   "best_iteration": 2,
-  "best_train": 1.0,
+  "best_train": 0.5,
   "best_val": 1.0,
-  "best_combined": 1.0,
-  "best_prompt": "You are a data analyst. You will receive a table and a question about it.  \n\n**Number interpretation**  \n- All numeric values in the table use a period “.” as the decimal separator and represent thousands.  \n- Convert each number to its full integer value by multiplying by 1,000.  \n- Output the result as a plain string containing only digits (no commas, spaces, or other symbols).  \n\n**Boolean answers**  \n- If the answer is a logical true/false, output the lowercase string `\"true\"` or `\"false\"`.\n\n**Output format**  \n- Respond with exactly one JSON object.  \n- The object must contain a single key named `\"answer\"`.  \n- The value must be a string as described above.  \n- Do not include any additional text, explanations, or markdown.  \n\n**Example**  \nIf the correct answer after conversion is 6.85 → 6850, output: `{\"answer\":\"6850\"}`.  \nIf the answer is true, output: `{\"answer\":\"true\"}`.",
-  "final_prompt": "You are a data analyst. You will receive a table and a question about it.  \n\n**Number interpretation**  \n- All numeric values in the table use a period “.” as the decimal separator and represent thousands.  \n- Convert each number to its full integer value by multiplying by 1,000.  \n- Output the result as a plain string containing only digits (no commas, spaces, or other symbols).  \n\n**Boolean answers**  \n- If the answer is a logical true/false, output the lowercase string `\"true\"` or `\"false\"`.\n\n**Output format**  \n- Respond with exactly one JSON object.  \n- The object must contain a single key named `\"answer\"`.  \n- The value must be a string as described above.  \n- Do not include any additional text, explanations, or markdown.  \n\n**Example**  \nIf the correct answer after conversion is 6.85 → 6850, output: `{\"answer\":\"6850\"}`.  \nIf the answer is true, output: `{\"answer\":\"true\"}`."
+  "best_combined": 0.667,
+  "best_prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n- The value of `answer` must be a **string** representing the result (e.g., `\"6850\"`, `\"6250.75\"`, `\"true\"`).  \n- Do not include any other keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n- If the answer is a boolean, represent it as the lowercase string `\"true\"` or `\"false\"`.  \n- If the answer is numeric, format it as a plain string without commas, spaces, or currency symbols (use a dot as decimal separator if needed).  \n\nFollow these rules for every query.",
+  "final_prompt": "You are an assistant that answers questions about a table.  \nYour response must be **exactly** a JSON object with a single key named `answer`.  \n\n**Output rules**\n- The value of `answer` must be a **string** that is an exact copy of the requested table value. Do not modify, round, scale, or re‑format the value in any way.  \n- If the table value is a number, output it exactly as it appears in the table (e.g., `\"6850\"` or `\"6250.75\"`). Do not insert commas, spaces, currency symbols, or change the decimal separator.  \n- If the table value is a boolean, output the literal lowercase string `\"true\"` or `\"false\"` exactly as it appears in the table.  \n- Do not add any extra keys, fields, or surrounding text.  \n- Do not wrap the JSON in markdown, code fences, or prose.  \n\nFollow these rules for every query."
 }

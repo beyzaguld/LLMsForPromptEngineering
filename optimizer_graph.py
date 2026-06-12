@@ -73,6 +73,8 @@ class OptimizerState(TypedDict):
     best_train: float
     best_val: float
     best_iteration: int
+    best_results: dict
+    best_rates: dict
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -155,6 +157,8 @@ def create_optimizer_graph(project, client):
                 "best_train":     train_ovr,
                 "best_val":       val_ovr,
                 "best_iteration": state["iteration"],
+                "best_results":   state["train_results"],
+                "best_rates":     state["train_rates"],
             })
             print(f"\n  ★ Yeni EN IYI prompt (combined {combined*100:.0f}% — "
                   f"iter {state['iteration']})")
@@ -176,16 +180,25 @@ def create_optimizer_graph(project, client):
 
     def analyze_failures(state: OptimizerState) -> dict:
         print(f"\n  [3/4] Basarisizlik raporu olusturuluyor...")
-        report = build_failure_report(state["train_results"], state["train_rates"])
+        # Greedy: her zaman EN IYI prompt'un sonuclarindan rapor uret.
+        # Boylece regresyon yapan bir iterasyon optimizasyon tabanini bozmaz.
+        results = state.get("best_results") or state["train_results"]
+        rates   = state.get("best_rates")   or state["train_rates"]
+        report = build_failure_report(results, rates)
         return {"failure_report": report}
 
     # ── Node: Optimizer LLM'i calistir ───────────────────────────────────────
 
     def optimize_prompt_node(state: OptimizerState) -> dict:
         print(f"  [4/4] Optimizer calistiriliyor ({project.optimizer_model})...")
+        # Greedy hill-climbing: bir onceki (belki regrese olmus) prompt yerine
+        # su ana kadarki EN IYI prompt'tan iyilestir. Temperature ile cesitlilik
+        # ekleyerek ayni tabandan farkli denemeler uretiriz.
+        base_prompt = state.get("best_prompt") or state["current_prompt"]
         new_prompt = _optimize_prompt_fn(
             client, project.optimizer_model,
-            state["current_prompt"], state["failure_report"]
+            base_prompt, state["failure_report"],
+            temperature=0.5,
         )
         preview = new_prompt[:100].replace('\n', ' ')
         print(f"  Yeni prompt: {preview}...")
@@ -268,6 +281,8 @@ def run_optimization(project, client) -> dict:
         "best_train":      0.0,
         "best_val":        0.0,
         "best_iteration":  0,
+        "best_results":    {},
+        "best_rates":      {},
     }
 
     final_state = graph.invoke(initial_state)
